@@ -31,13 +31,24 @@ editor_options:
 ---
 
 # Introduction
-@sleuth
+
+@Sleuth
 
 # Ames, Iowa Data
 
+@Kaggle2016
+
 # Analysis Question I
 
+@Sleuth
+
+@Pearl2009
+
+@Ruppert2015
+
 # Analysis Question II
+
+@Hastie2009
 
 # Appendix
 
