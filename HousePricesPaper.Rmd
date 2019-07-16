@@ -1,0 +1,34 @@
+---
+title: "Predicting House Prices with a Linear Regression Model"
+author: "Kevin Thompson $^{*}$, Sterling Beason, & Brandon Croom"
+date: |
+  Data Science Program, Southern Methodist University, USA \break
+  $^*$ Corresponding author, Email: kevinthompson@smu.edu
+abstract: |
+  Price prediction is pivotal for real estate. Homeowners on the sell-side want to know when to sell, what to renovate, and how much profit they can expect from their efforts. Homebuyers want to know whether they are getting a fair price, where to look for homes in their budget, and the various trade-offs that accompany a purchasing decision. Real estate companies navigate both sides of real estate; hence, they too are a key stakeholder. In the first part of our analysis, we estimate the relationship between house prices, the square footage, and neighborhood location in Ames, Iowa. In the second part of our analysis, we train a linear regression model to predict house prices in Ames, Iowa. 
+lang: en-US
+class: man
+# figsintext: true
+numbersections: true
+encoding: UTF-8
+bibliography: nothing
+biblio-style: apalike
+output:
+  bookdown::pdf_document2:
+     citation_package: natbib
+     keep_tex: true
+     toc: false
+header-includes:
+   - \usepackage{amsmath}
+   - \usepackage[utf8]{inputenc}
+   - \usepackage[T1]{fontenc}
+   - \usepackage{setspace}
+   - \onehalfspacing
+   - \setcitestyle{round}
+   - \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+editor_options: 
+  chunk_output_type: console
+---
+
+
+placeholder
