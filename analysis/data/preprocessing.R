@@ -4,14 +4,18 @@
 # Last Updated: August 4, 2019
 ################
 library(readr)
+library(dplyr)
 library(forcats)
+library(purrr)
+library(gtools)
+library(naniar)
 
-#TODO: ENSURE ORDERING ON ORDERED FACTORS MAKES SENSE
-#TODO: MAP DEFINITIONAL DEPENDENCIES BETWEEN VARIABLES
-#TODO: ENGINEER NEW FEATURES
+
+#TODO: CHECK RELATIONSHIP BETWEEN QUALITY AND CONDITION
 #TODO: CHECK CONSISTENCY AMONG QUALITY INDICATORS
-#TODO: CHECK IF CONDITION AND QUALITY GO HAND IN HAND
-#TODO: MAKE COLUMN NAMES SYNTACTICALLY CORRECT
+#TODO: IMPUTE LOT FRONTAGE
+#TODO: BREAK UP FENCE VARIABLE
+#TODO: ENGINEER NEW FEATURES
 
 housePrices <- read_csv("train.csv",
                         col_types = cols(
@@ -31,7 +35,7 @@ housePrices <- read_csv("train.csv",
                           Condition2 = col_factor(),
                           BldgType = col_factor(),
                           HouseStyle = col_factor(),
-                          OverallQual = col_factor(ordered=TRUE),
+                          OverallQual = col_factor(ordered=TRUE), # ordered correctly
                           OverallCond = col_factor(ordered=TRUE),
                           YearBuilt = col_integer(),
                           YearRemodAdd = col_integer(),
@@ -87,7 +91,7 @@ housePrices <- read_csv("train.csv",
                           ScreenPorch = col_double(),
                           PoolArea = col_double(),
                           PoolQC = col_factor(ordered=TRUE),
-                          Fence = col_factor(ordered=TRUE),
+                          Fence = col_factor(),
                           MiscFeature = col_factor(),
                           MiscVal = col_double(),
                           MoSold = col_factor(ordered=TRUE),
@@ -96,3 +100,59 @@ housePrices <- read_csv("train.csv",
                           SaleCondition = col_factor(),
                           SalePrice = col_double()
                           ))
+
+# Remove columns with practically no data
+housePrices$PoolQC <- NULL  #not enough variation in data to be useful
+housePrices$MiscFeature <- NULL  #not enough data
+
+# Remove missing rows for variables very few missing values
+housePrices <- housePrices %>%
+                filter(!is.na(MasVnrType),
+                       !is.na(Electrical))
+
+# Add missing level to account for variables with false NAs (NAs that really just mean "doesn't have X")
+housePrices <- housePrices %>%
+                modify_if(is.factor, fct_explicit_na, na_level="NA")
+
+
+# Fix Ordered Factors
+housePrices$OverallQual <- housePrices$OverallQual %>%
+                            fct_relevel(mixedsort)
+housePrices$OverallCond <- housePrices$OverallCond %>%
+                            fct_relevel(mixedsort)
+housePrices$GarageQual <- housePrices$GarageQual %>%
+                            fct_relevel("NA", "Po", "Fa", "TA", "Gd", "Ex")
+housePrices$GarageCond <- housePrices$GarageCond %>%
+                            fct_relevel("NA", "Po", "Fa", "TA", "Gd", "Ex")
+housePrices$ExterQual <- housePrices$ExterQual %>%
+                            fct_relevel("Fa", "TA", "Gd", "Ex")
+housePrices$ExterCond <- housePrices$ExterCond %>%
+                            fct_relevel("Po", "Fa", "TA", "Gd", "Ex")
+housePrices$BsmtQual <- housePrices$BsmtQual %>%
+                            fct_relevel("NA", "Fa", "TA", "Gd", "Ex")
+housePrices$BsmtCond <- housePrices$BsmtCond %>%
+                            fct_relevel("NA", "Po", "Fa", "TA", "Gd")
+housePrices$BsmtExposure <- housePrices$BsmtExposure %>%
+                              fct_relevel("NA", "No", "Mn", "Av", "Gd")
+housePrices$BsmtFinType1 <- housePrices$BsmtFinType1 %>%
+                              fct_relevel("NA", "Unf", "LwQ", "Rec", "BLQ", "ALQ", "GLQ")
+housePrices$BsmtFinType2 <- housePrices$BsmtFinType2 %>%
+                              fct_relevel("NA", "Unf", "LwQ", "Rec", "BLQ", "ALQ", "GLQ")
+housePrices$HeatingQC <- housePrices$HeatingQC %>%
+                              fct_relevel("Po", "Fa", "TA", "Gd", "Ex")
+housePrices$KitchenQual <- housePrices$KitchenQual %>%
+                              fct_relevel("Fa", "TA", "Gd", "Ex")
+housePrices$Functional <- housePrices$Functional %>%
+                              fct_relevel("Sev", "Maj2", "Maj1", "Mod", "Min2", "Min1", "Typ")
+housePrices$FireplaceQu <- housePrices$FireplaceQu %>%
+                              fct_relevel("NA", "Po", "Fa", "TA", "Gd", "Ex")
+housePrices$GarageFinish <- housePrices$GarageFinish %>%
+                              fct_relevel("NA", "Unf", "RFn", "Fin")
+housePrices$MoSold <- housePrices$MoSold %>%
+                        fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+
+# Make Column Names Syntactically Correct
+housePrices <- housePrices %>%
+                rename(FirstFlrSF = `1stFlrSF`,
+                       SecndFlrSF = `2ndFlrSF`,
+                       ThreeSsnPorch = `3SsnPorch`)

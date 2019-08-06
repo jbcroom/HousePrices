@@ -33,6 +33,7 @@ editor_options:
 
 @Sleuth
 
+
 # Ames, Iowa Data
 
 @Kaggle2016
@@ -48,6 +49,7 @@ editor_options:
 # Analysis Question II
 
 @Hastie2009
+@Trefethen1997
 
 # Appendix
 
