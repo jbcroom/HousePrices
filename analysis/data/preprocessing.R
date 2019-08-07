@@ -9,6 +9,7 @@ library(forcats)
 library(purrr)
 library(gtools)
 library(naniar)
+library(simputation)
 
 
 #TODO: CHECK RELATIONSHIP BETWEEN QUALITY AND CONDITION
@@ -239,6 +240,16 @@ housePrices <- housePrices %>%
                 rename(FirstFlrSF = `1stFlrSF`,
                        SecndFlrSF = `2ndFlrSF`,
                        ThreeSsnPorch = `3SsnPorch`)
+
+
+housePrices_imputed <-
+  housePrices %>%
+  bind_shadow(only_miss = TRUE) %>%
+  add_label_shadow() %>%
+  impute_lm(LotFrontage ~ Neighborhood + LotArea + LotShape + MSSubClass)
+
+housePrices$LotFrontage <- housePrices_imputed$LotFrontage
+rm(housePrices_imputed)
 
 ######################  FOR TEST DATA ############################################3
 

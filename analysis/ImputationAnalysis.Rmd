@@ -1,0 +1,112 @@
+---
+title: "ImputationAnalysis"
+author: "Kevin Thompson"
+date: "August 6, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(naniar)
+library(simputation)
+load("data/.RData")
+```
+
+# Introduction
+
+Preliminary exploratory analysis suggested that the only missing data of interest for us was in the lot frontage variable.
+
+```{r lotfrontagemissing, echo=FALSE}
+missing_lotfrontage <- prop_miss(housePrices$LotFrontage)
+paste(round(missing_lotfrontage * 100, 2), "% of observations missing for Lot Frontage.")
+```
+
+Lot frontage denotes the feet of street connected to the property. A house on the corner will have more frontage than a house in the middle of a neighborhood. Also, a house that is in a suburban development area will likely have streets in front of it and behind it. We expect to capture a great deal of specific information in this variable that we wouldn't get otherwise; therefore, we find it prudent to impute the missing data for this variable. Other variables have missing values, but they were either false missing values (missing values that don't actually mean "missing") or were there were too few missing values to justify anything beyone listwise deletion.
+
+# Missingness of Lot Frontage and Selling Price
+
+Because we are predicting home prices, it is worth looking at the distribution of prices for missing and non-missing values of lot frontage.
+
+```{r sellingprice, echo=FALSE}
+nabularHousePrices <- housePrices %>%
+                        bind_shadow(only_miss = TRUE)
+
+nabularHousePrices %>%
+  ggplot(aes(x=SalePrice, color = LotFrontage_NA)) +
+  geom_density() +
+  facet_wrap(~LotFrontage_NA) +
+  labs(x = "Home Selling Price", title = "Home Prices across Missing and Non-Missing Lot Frontage")
+
+```
+
+The distribution house prices does not seem to change between missing and non-missing values of selling price. This is a good indicator that the missingness of lot frontage is unrelated to the variable of interest. However, we are still likely to get better predictions through imputation.
+
+
+# Identifying the Type of Missingness and Imputing
+
+Missing data can either be Missing Completely At Random (MCAR), Missing At Random (MAR), or Missing Not At Random (MNAR). In the MCAR case, listwise deletion is justifiable. In the MAR case, we can feed the data into an imputation model. In the MNAR case, consistent estimates may or may not be recoverable depending on what we assume is the cause of the missingness in lot frontage.
+
+We first check to see if the missingness is related to the property's neighborhood.
+
+```{r missingbyneighborhood, echo=FALSE, fig.width=15}
+housesPerNeighborhood <- housePrices %>%
+                          group_by(Neighborhood) %>%
+                          summarize(num_houses = n())
+
+missingPerNeighborhood <- housePrices %>%
+                            group_by(Neighborhood) %>%
+                            summarize(percent_missing = prop_miss(LotFrontage) * 100,
+                                      num_missing = n_miss(LotFrontage))
+
+
+merged_df <- merge(housesPerNeighborhood, missingPerNeighborhood, by="Neighborhood")
+
+merged_df %>%
+  ggplot(aes(x = reorder(Neighborhood, -num_houses), y = percent_missing, fill = num_missing)) +
+  geom_col() +
+  labs(title = "Missingness of Lot Frontage by Neighborhood Arranged by Number of Houses", x = "Neighborhood", y = "% Missing", fill = "# Missing") +
+  geom_text(label = merged_df$num_houses, vjust = -1)
+
+
+
+```
+
+
+There doesn't seem to be a very clear relationship between the proportion of homes missing and the size of the neighborhood, though it is clear that the difference in the percent of values missing between neighborhoods is quite large. Neighborhood is thus a strong contender for our imputation model. At the very least, we can probably rule out the listwise deletion option.
+
+Let's see how well a simple linear imputer using the neighborhood variable performs.
+
+```{r simpleimputer, echo=FALSE}
+frontage_imp_lm <-
+housePrices %>%
+  bind_shadow(only_miss = TRUE) %>%
+  add_label_shadow() %>%
+  impute_lm(LotFrontage ~ Neighborhood)
+
+ggplot(frontage_imp_lm,
+       aes(x = LotFrontage_NA,
+           y = LotFrontage)) +
+  geom_boxplot() +
+  labs(y = "Lot Frontage")
+```
+
+The median of the imputed values is practically the same as the median for non-imputed values. Furthermore, the values are within a sane range of the data. However, we still need to add more parameters to account for the spread.
+
+There are other strong contenders for our imputation model, such as the lot area, lot shape, and so forth. Here is how our new imputation model performs.
+
+```{r areaimputation, echo=FALSE}
+frontage_areaimp_lm <-
+housePrices %>%
+  bind_shadow(only_miss = TRUE) %>%
+  add_label_shadow() %>%
+  impute_lm(LotFrontage ~ Neighborhood + LotArea + LotShape + MSSubClass)
+
+ggplot(frontage_areaimp_lm,
+       aes(x = LotFrontage_NA,
+           y = LotFrontage)) +
+  geom_boxplot() +
+  labs(y = "Lot Frontage")
+```
+
+This imputation model seems satisfactory for this project. The chosen variables for imputation were Neighborhood, Lot Area, Lot Shape, and MSSubClass.

@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > ################
 > # File for preprocessing raw data
 > # Authors: Kevin Thompson, Brandon Croom, Sterling Beason
@@ -44,6 +46,14 @@ Registered S3 methods overwritten by 'ggplot2':
   [.quosures     rlang
   c.quosures     rlang
   print.quosures rlang
+> library(simputation)
+
+Attaching package: ‘simputation’
+
+The following object is masked from ‘package:naniar’:
+
+    impute_median
+
 > 
 > 
 > #TODO: CHECK RELATIONSHIP BETWEEN QUALITY AND CONDITION
@@ -275,6 +285,16 @@ Registered S3 methods overwritten by 'ggplot2':
 +                        SecndFlrSF = `2ndFlrSF`,
 +                        ThreeSsnPorch = `3SsnPorch`)
 > 
+> 
+> housePrices_imputed <-
++   housePrices %>%
++   bind_shadow(only_miss = TRUE) %>%
++   add_label_shadow() %>%
++   impute_lm(LotFrontage ~ Neighborhood + LotArea + LotShape + MSSubClass)
+> 
+> housePrices$LotFrontage <- housePrices_imputed$LotFrontage
+> rm(housePrices_imputed)
+> 
 > ######################  FOR TEST DATA ############################################3
 > 
 > # Remove columns with practically no data
@@ -323,4 +343,4 @@ Registered S3 methods overwritten by 'ggplot2':
 > 
 > proc.time()
    user  system elapsed 
-  0.818   0.276   0.775 
+  1.018   0.256   0.932 
