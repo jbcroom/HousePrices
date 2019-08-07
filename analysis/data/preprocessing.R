@@ -1,6 +1,6 @@
 ################
 # File for preprocessing raw data
-# Authors: Kevin Thompson, Brandom Croom, Sterling Beason
+# Authors: Kevin Thompson, Brandon Croom, Sterling Beason
 # Last Updated: August 4, 2019
 ################
 library(readr)
@@ -156,3 +156,5 @@ housePrices <- housePrices %>%
                 rename(FirstFlrSF = `1stFlrSF`,
                        SecndFlrSF = `2ndFlrSF`,
                        ThreeSsnPorch = `3SsnPorch`)
+
+
