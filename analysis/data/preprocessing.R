@@ -101,6 +101,89 @@ housePrices <- read_csv("train.csv",
                           SalePrice = col_double()
                           ))
 
+housePricesTest <- read_csv("test.csv",
+                            col_types = cols(
+                              MSSubClass = col_factor(),
+                              MSZoning = col_factor(),
+                              LotFrontage = col_double(),
+                              LotArea = col_double(),
+                              Street = col_factor(),
+                              Alley = col_factor(),
+                              LotShape = col_factor(),
+                              LandContour = col_factor(),
+                              Utilities = col_factor(),
+                              LotConfig = col_factor(),
+                              LandSlope = col_factor(),
+                              Neighborhood = col_factor(),
+                              Condition1 = col_factor(),
+                              Condition2 = col_factor(),
+                              BldgType = col_factor(),
+                              HouseStyle = col_factor(),
+                              OverallQual = col_factor(ordered=TRUE), # ordered correctly
+                              OverallCond = col_factor(ordered=TRUE),
+                              YearBuilt = col_integer(),
+                              YearRemodAdd = col_integer(),
+                              RoofStyle = col_factor(),
+                              RoofMatl = col_factor(),
+                              Exterior1st = col_factor(),
+                              Exterior2nd = col_factor(),
+                              MasVnrType = col_factor(),
+                              MasVnrArea = col_double(),
+                              ExterQual = col_factor(ordered=TRUE),
+                              ExterCond = col_factor(ordered=TRUE),
+                              Foundation = col_factor(),
+                              BsmtQual = col_factor(ordered=TRUE),
+                              BsmtCond = col_factor(ordered=TRUE),
+                              BsmtExposure = col_factor(ordered=TRUE),
+                              BsmtFinType1 = col_factor(ordered=TRUE),
+                              BsmtFinSF1 = col_double(),
+                              BsmtFinType2 = col_factor(ordered=TRUE),
+                              BsmtFinSF2 = col_double(),
+                              BsmtUnfSF = col_double(),
+                              TotalBsmtSF = col_double(),
+                              Heating = col_factor(),
+                              HeatingQC = col_factor(ordered=TRUE),
+                              CentralAir = col_factor(),
+                              Electrical = col_factor(),
+                              `1stFlrSF` = col_double(),
+                              `2ndFlrSF` = col_double(),
+                              LowQualFinSF = col_double(),
+                              GrLivArea = col_double(),
+                              BsmtFullBath = col_integer(),
+                              BsmtHalfBath = col_integer(),
+                              FullBath = col_integer(),
+                              HalfBath = col_integer(),
+                              BedroomAbvGr = col_integer(),
+                              KitchenAbvGr = col_integer(),
+                              KitchenQual = col_factor(ordered=TRUE),
+                              TotRmsAbvGrd = col_integer(),
+                              Functional = col_factor(ordered=TRUE),
+                              Fireplaces = col_integer(),
+                              FireplaceQu = col_factor(ordered=TRUE),
+                              GarageType = col_factor(),
+                              GarageYrBlt = col_integer(),
+                              GarageFinish = col_factor(ordered=TRUE),
+                              GarageCars = col_double(),
+                              GarageArea = col_double(),
+                              GarageQual = col_factor(ordered=TRUE),
+                              GarageCond = col_factor(ordered=TRUE),
+                              PavedDrive = col_factor(),
+                              WoodDeckSF = col_double(),
+                              OpenPorchSF = col_double(),
+                              EnclosedPorch = col_double(),
+                              `3SsnPorch` = col_double(),
+                              ScreenPorch = col_double(),
+                              PoolArea = col_double(),
+                              PoolQC = col_factor(ordered=TRUE),
+                              Fence = col_factor(),
+                              MiscFeature = col_factor(),
+                              MiscVal = col_double(),
+                              MoSold = col_factor(ordered=TRUE),
+                              YrSold = col_integer(),
+                              SaleType = col_factor(),
+                              SaleCondition = col_factor()
+                            ))
+
 # Remove columns with practically no data
 housePrices$PoolQC <- NULL  #not enough variation in data to be useful
 housePrices$MiscFeature <- NULL  #not enough data
@@ -157,4 +240,48 @@ housePrices <- housePrices %>%
                        SecndFlrSF = `2ndFlrSF`,
                        ThreeSsnPorch = `3SsnPorch`)
 
+######################  FOR TEST DATA ############################################3
 
+# Remove columns with practically no data
+housePricesTest$PoolQC <- NULL  #not enough variation in data to be useful
+housePricesTest$MiscFeature <- NULL  #not enough data
+
+# Add missing level to account for variables with false NAs (NAs that really just mean "doesn't have X")
+housePricesTest <- housePricesTest %>%
+  modify_if(is.factor, fct_explicit_na, na_level="NA")
+
+# Fix Ordered Factors
+housePricesTest$OverallQual <- housePricesTest$OverallQual %>%
+  fct_relevel(mixedsort)
+housePricesTest$OverallCond <- housePricesTest$OverallCond %>%
+  fct_relevel(mixedsort)
+housePricesTest$GarageQual <- housePricesTest$GarageQual %>%
+  fct_relevel("NA", "Po", "Fa", "TA", "Gd")
+housePricesTest$GarageCond <- housePricesTest$GarageCond %>%
+  fct_relevel("NA", "Po", "Fa", "TA", "Gd", "Ex")
+housePricesTest$ExterQual <- housePricesTest$ExterQual %>%
+  fct_relevel("Fa", "TA", "Gd", "Ex")
+housePricesTest$ExterCond <- housePricesTest$ExterCond %>%
+  fct_relevel("Po", "Fa", "TA", "Gd", "Ex")
+housePricesTest$BsmtQual <- housePricesTest$BsmtQual %>%
+  fct_relevel("NA", "Fa", "TA", "Gd", "Ex")
+housePricesTest$BsmtCond <- housePricesTest$BsmtCond %>%
+  fct_relevel("NA", "Po", "Fa", "TA", "Gd")
+housePricesTest$BsmtExposure <- housePricesTest$BsmtExposure %>%
+  fct_relevel("NA", "No", "Mn", "Av", "Gd")
+housePricesTest$BsmtFinType1 <- housePricesTest$BsmtFinType1 %>%
+  fct_relevel("NA", "Unf", "LwQ", "Rec", "BLQ", "ALQ", "GLQ")
+housePricesTest$BsmtFinType2 <- housePricesTest$BsmtFinType2 %>%
+  fct_relevel("NA", "Unf", "LwQ", "Rec", "BLQ", "ALQ", "GLQ")
+housePricesTest$HeatingQC <- housePricesTest$HeatingQC %>%
+  fct_relevel("Po", "Fa", "TA", "Gd", "Ex")
+housePricesTest$KitchenQual <- housePricesTest$KitchenQual %>%
+  fct_relevel("Fa", "TA", "Gd", "Ex")
+housePricesTest$Functional <- housePricesTest$Functional %>%
+  fct_relevel("Sev", "Maj2", "Maj1", "Mod", "Min2", "Min1", "Typ")
+housePricesTest$FireplaceQu <- housePricesTest$FireplaceQu %>%
+  fct_relevel("NA", "Po", "Fa", "TA", "Gd", "Ex")
+housePricesTest$GarageFinish <- housePricesTest$GarageFinish %>%
+  fct_relevel("NA", "Unf", "RFn", "Fin")
+housePricesTest$MoSold <- housePricesTest$MoSold %>%
+  fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")

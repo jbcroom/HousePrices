@@ -6,7 +6,7 @@
 library(ggplot2)
 library(ggpubr)
 
-source("preprocessing.R")
+load(file = "/data/.RData")
 
 #Perform some basic counts of categorical and numerical variables
 
