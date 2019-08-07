@@ -1,4 +1,5 @@
 .Rproj.user
 .Rhistory
-.RData
 .Ruserdata
+analysis/modelselection/
+analysis/modelselection/Eigenpractice.cpp
