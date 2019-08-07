@@ -8,6 +8,15 @@ library(ggpubr)
 
 source("preprocessing.R")
 
+#Perform some basic counts of categorical and numerical variables
+
+#Numeric Variables
+housePrices %>% keep(is.numeric) %>% tidyr::drop_na()
+
+#Categorical Observations
+housePrices %>% keep(is.factor) %>% tidyr::drop_na() 
+
+
 #Graph out the quality indicators as density plots against the overall quality indicator to see if they line up
 #Exterior Quality
 p1 = housePrices %>% ggplot(aes(x=ExterQual, y=OverallQual, color=ExterQual)) + geom_point() + theme_pubr()

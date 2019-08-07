@@ -31,10 +31,19 @@ editor_options:
 
 # Introduction
 
+
 @Sleuth
 
 
 # Ames, Iowa Data
+
+The data used for this analysis described in the sections below comes from the Kaggle Competition "House Prices: Advanced Regression Techniques" (@Kaggle2016). The data set for this competition contains housing related data for Ames, Iowa. The total data set contains 2919 observations and 80 features. Although too numerous to describe here (see the Kaggle website for full descriptors @Kaggle), these 80 features relate to quantity and quality based attributes of a physical property that may interest a prospective home buyer (e.g. How many rooms in the property? What is the condition of the kitchen?, What is the location of the property?, Is there a basement?). Delving deeper, the data set breaks down into 46 categorical variables and 34 numeric variables.
+
+The categorical variables break down into a relatively equal mix of nominal and ordinal values (23 nominal and 23 ordinal). The ordinal variables indicate a grading of various components of the property. The nominal values provide information on various conditions of the property such as materials used. @DeCock2011
+
+The numeric variables break down into continuous and discrete values (20 continuous and 14 discrete). The continuous variables indicate information a prospective home buyer would like to understand such as lot size, total square footage, and specific square footage for living spaces. The discrete variables provide the prospective home buyer with an understanding of items such as number of bedrooms, number of bathrooms, etc. @DeCock2011
+
+
 
 @Kaggle2016
 
