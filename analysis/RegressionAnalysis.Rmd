@@ -8,6 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(ggfortify)
 load("data/.RData")
 ```
 
@@ -24,17 +25,34 @@ housePrices_imputed_new %>%
 
 ```
 
+We look 
 
 
 
 
 
+We fit regression models to get the following residual plots:
 
-We fit a regression model to get the following output:
-
-```{r modelfit, echo=FALSE}
-housePrices_imputed_new %>%
-  lm(formula = SalePrice ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea) %>%
-  summary()
-
+```{r modelfit, echo=TRUE}
+baseModel <- housePrices_imputed_new %>%
+              lm(formula = SalePrice ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea)
+noOutlierModel <- lm(data = housePrices_imputed_new[-c(339),], formula = SalePrice ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea)
+logModel <- lm(data = housePrices_imputed_new, formula = log(SalePrice) ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea)
+lognoOutlierModel <- lm(data = housePrices_imputed_new[-c(339),], formula = log(SalePrice) ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea)
 ```
+
+
+
+```{r residplots, echo=FALSE}
+autoplot(baseModel, which = 1:6, ncol = 2, label.size = 3, title = "linear")
+autoplot(logModel, which = 1:6, ncol = 2, label.size = 3, title = "log-linear")
+```
+
+```{r, echo=TRUE}
+summary(baseModel)
+summary(noOutlierModel)
+summary(logModel)
+summary(lognoOutlierModel)
+```
+
+It appears that the outlier has significant influence on our coefficient estimates for edwards and the interaction between edwards and gross living area. Though the observation is still influential after taking a log transform, we find that the influence is reduced such that we do not get different answers with or without the observation. So our final model is the log-linear model. 
