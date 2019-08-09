@@ -44,11 +44,10 @@ p4 =  housePrices %>%
         group_by(FireplaceQu) %>%
         dplyr::summarise(OverallQual_Avg = mean(as.numeric(OverallQual)[])) %>%
         ggplot(aes(x = FireplaceQu, y = OverallQual_Avg))+ geom_bar(stat = 'identity',fill = "blue") + theme_pubr() + 
-        geom_text(aes(label=OverallQual_Avg), size = 2.5, position=position_dodge(width=0.2), vjust=-0.25) + 
-        scale_y_continuous(limits = c(0, 30))
+        geom_text(aes(label=OverallQual_Avg), size = 2.5, position=position_dodge(width=0.2), vjust=-0.25)
 
 #Garage Quality
-p4 =  housePrices %>%
+p5 =  housePrices %>%
       group_by(GarageQual) %>%
       dplyr::summarise(OverallQual_Avg = mean(as.numeric(OverallQual)[])) %>%
       ggplot(aes(x = GarageQual, y = OverallQual_Avg))+ geom_bar(stat = 'identity',fill = "blue") + theme_pubr() + 
@@ -86,7 +85,7 @@ p4 =  housePrices %>%
       geom_text(aes(label=OverallQual_Avg), size = 2.5, position=position_dodge(width=0.2), vjust=-0.25)
 
 #Garage Quality
-p4 =  housePrices %>%
+p5 =  housePrices %>%
       group_by(GarageQual) %>%
       dplyr::summarise(OverallQual_Avg = median(as.numeric(OverallQual)[])) %>%
       ggplot(aes(x = GarageQual, y = OverallQual_Avg))+ geom_bar(stat = 'identity',fill = "blue") + theme_pubr() + 
