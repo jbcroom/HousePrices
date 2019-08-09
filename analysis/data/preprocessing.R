@@ -293,3 +293,4 @@ housePricesTest$GarageFinish <- housePricesTest$GarageFinish %>%
   fct_relevel("NA", "Unf", "RFn", "Fin")
 housePricesTest$MoSold <- housePricesTest$MoSold %>%
   fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+

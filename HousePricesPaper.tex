@@ -118,21 +118,115 @@ linear regression model to predict house prices in Ames, Iowa.
 
 \section{Introduction}\label{introduction}
 
+Price prediction is pivotal for real estate. Homeowners on the sell-side
+want to know when to sell, what to renovate, and how much profit they
+can expect from their efforts. Homebuyers want to know whether they are
+getting a fair price, where to look for homes in their budget, and the
+various trade-offs that accompany a purchasing decision. Real estate
+companies navigate both sides of real estate; hence, they too are a key
+stakeholder. These stakeholders utilize multiple factors related to real
+estate to determine the fair price for the property. These same factors
+can be built into a model for price prediction that assists in taking
+some of the guess work out of property pricing.
+
+The analysis performed for this paper leverages a data set focused on
+the housing market in Ames, Iowa. This data set is from the ``House
+Price'' Kaggle competition (\citet{Kaggle2016}). In this competition
+Kaggle competitors attempt build models that best predict housing prices
+based on the Ames, Iowa data set. Over the course of this paper a
+similar approach to this specific Kaggle competition will be taken. The
+first part of the paper will focus on the Ames, Iowa dataset, provide
+the reader with detailed information about the data and any additional
+variables the team created for model building. Analysis of this data
+will then be performed in two parts. In the first part of our analysis,
+we estimate the relationship between house prices, the square footage,
+and neighborhood location in Ames, Iowa. In the second part of our
+analysis, we train a linear regression model to predict house prices in
+Ames, Iowa.
+
+The intent of this paper is to provide the reader with an understanding
+of how linear regression can be applied to data and the analysis that
+must be undertaken to ensure a linear regression model is adequately
+developed.
+
 \citet{Sleuth}
 
 \section{Ames, Iowa Data}\label{ames-iowa-data}
 
-The data used for this analysis described in the sections below comes
-from the Kaggle Data set for House Prices (\citet{Kaggle2016}). The data
-comes from the Ames, Iowa Housing dataset. This specific data set
-contains a total of 2919 observations with 81 features. The data set is
-broken up into a test data set, containing 1459 observations and 80
-features (sale price is removed) and a training data set, containing
-1460 observations with 81 features.
+The data used for this analysis, described in the sections below, comes
+from the Kaggle Competition ``House Prices: Advanced Regression
+Techniques'' (\citet{Kaggle2016}). The data set for this competition
+contains housing related data for Ames, Iowa. The total data set
+contains 2919 observations and 80 features or variables. Although too
+numerous to describe here (see the Kaggle website for full descriptors
+(\citet{Kaggle2016})), these 80 features relate to quantity and quality
+based attributes of a physical property that may interest any of the key
+stakeholders (prospective home buyer, home seller, real estate
+company/agent). For example the data provides answers to questions such
+as: ``How many rooms in the property?'', ``What is the condition of the
+kitchen?'', ``What is the location of the property?'', ``Is there a
+basement?''. Delving deeper, the data set breaks down into 46
+categorical variables and 34 numeric variables.
 
-\citet{Kaggle2016}
+The categorical variables break down into a relatively equal mix of
+nominal and ordinal values (23 nominal and 23 ordinal). The ordinal
+variables indicate a grading of various property related components such
+as the overall property quality, overall property condition, room
+specific quality and room specific conditions. The nominal values
+provide information on various conditions of the property such as
+building materials used and dwelling type. \citet{DeCock2011}
+
+The numeric variables contain both continuous and discrete values (20
+continuous and 14 discrete). The continuous variables indicate
+information a prospective home buyer would like to understand such as
+lot size, total square footage, and specific square footage for living
+spaces. The discrete variables provide the prospective home buyer with
+an understanding of items such as number of bedrooms, number of
+bathrooms, etc. \citet{DeCock2011}
+
+In reviewing the data it was determined that a few variables could be
+removed for reasons noted below:
+
+\begin{itemize}
+\tightlist
+\item
+  ID - this field is a record ID field and is not informational for
+  analysis
+\item
+  Pool Quality - this field does not contain enough variation to be
+  useful
+\item
+  Miscellaneous Feature - this field contains minimial information
+\end{itemize}
+
+Data quality checks were performed across all remaining variables to
+address missing values, inconsistent variable names, and to ensure
+consistent ordering of ordinal variables across all variables of the
+same type. Comparison analysis was also performed to ensure the variable
+ordering was appropriate, as shown in figures X \& X
 
 \section{Analysis Question I}\label{analysis-question-i}
+
+\subsection{Problem Statement}\label{problem-statement}
+
+A local real estate company, Century 21, would like to understand the
+relationship between living area of a home and sale prices.
+Specifically, the company would like to focus only on sales in certain
+neighborhoods (NAmes, Edwards, and BrkSide). An estimate (or estimates)
+of this information as well as required confidence intervals should be
+provided, along with verification of the model assumptions and
+addressing of suspicious observations. In the conclusion quantify the
+relationship between living area and sale price with respect to these
+three neighborhoods.
+
+\subsection{Assumption Checks}\label{assumption-checks}
+
+\subsection{Competing Model
+Comparison}\label{competing-model-comparison}
+
+\subsection{Parameters}\label{parameters}
+
+\subsection{Conclusion}\label{conclusion}
 
 \citet{Sleuth}
 
@@ -141,6 +235,25 @@ features (sale price is removed) and a training data set, containing
 \citet{Ruppert2015}
 
 \section{Analysis Question II}\label{analysis-question-ii}
+
+\subsection{Problem Statement}\label{problem-statement-1}
+
+Build a predictive model, leveraging techniques learned in DS 6371 only,
+to predict sales prices of homes in all of Ames, Iowa. The goal is to
+produce four models: a forward selection model, a backward selection
+model, a stepwise selection model and a custom model. Each model should
+have an adjusted \(R^{2}\), CV Press and Kaggle Score. In the conclusion
+describe which model is best at predicting future sale prices of homes
+in Ames, Iowa.
+
+\subsection{Assumption Checks}\label{assumption-checks-1}
+
+\subsection{Competing Model
+Comparison}\label{competing-model-comparison-1}
+
+\subsection{Parameters}\label{parameters-1}
+
+\subsection{Conclusion}\label{conclusion-1}
 
 \citet{Hastie2009} \citet{Trefethen1997}
 
