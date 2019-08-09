@@ -141,4 +141,3 @@ p3 =  housePrices %>%
       geom_text(aes(label=OverallCond_Avg), size = 2.5, position=position_dodge(width=0.2), vjust=-0.25)
 
 ggarrange(p1,p2,p3)
-
