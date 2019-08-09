@@ -248,9 +248,6 @@ housePrices_imputed <-
   add_label_shadow() %>%
   impute_lm(LotFrontage ~ Neighborhood + LotArea + LotShape + MSSubClass)
 
-housePrices$LotFrontage <- housePrices_imputed$LotFrontage
-rm(housePrices_imputed)
-
 ######################  FOR TEST DATA ############################################3
 
 # Remove columns with practically no data

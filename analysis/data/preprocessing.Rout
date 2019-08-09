@@ -17,8 +17,6 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-[Previously saved workspace restored]
-
 > ################
 > # File for preprocessing raw data
 > # Authors: Kevin Thompson, Brandon Croom, Sterling Beason
@@ -292,9 +290,6 @@ The following object is masked from ‘package:naniar’:
 +   add_label_shadow() %>%
 +   impute_lm(LotFrontage ~ Neighborhood + LotArea + LotShape + MSSubClass)
 > 
-> housePrices$LotFrontage <- housePrices_imputed$LotFrontage
-> rm(housePrices_imputed)
-> 
 > ######################  FOR TEST DATA ############################################3
 > 
 > # Remove columns with practically no data
@@ -343,4 +338,4 @@ The following object is masked from ‘package:naniar’:
 > 
 > proc.time()
    user  system elapsed 
-  1.018   0.256   0.932 
+  0.957   0.306   0.897 

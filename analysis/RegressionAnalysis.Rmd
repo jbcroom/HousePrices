@@ -1,0 +1,40 @@
+---
+title: "RegressionAnalysis"
+author: "Kevin Thompson"
+date: "August 7, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+load("data/.RData")
+```
+
+A quick check of the imputed Lot Frontage values before we begin.
+
+```{r imputationcheck, echo=FALSE}
+housePrices_imputed_new <- housePrices_imputed %>%
+                            filter(Neighborhood %in% c("NAmes", "BrkSide", "Edwards"))
+
+housePrices_imputed_new %>%
+  ggplot(aes(x=LotFrontage, y=SalePrice, color=any_missing)) +
+  geom_point() +
+  labs(x = "Lot Frontage", y = "Price", color = "Missingness", title = "Price vs Frontage")
+
+```
+
+
+
+
+
+
+
+We fit a regression model to get the following output:
+
+```{r modelfit, echo=FALSE}
+housePrices_imputed_new %>%
+  lm(formula = SalePrice ~ GrLivArea + Neighborhood + Neighborhood*GrLivArea) %>%
+  summary()
+
+```
