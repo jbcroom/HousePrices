@@ -131,18 +131,18 @@ some of the guess work out of property pricing.
 
 The analysis performed for this paper leverages a data set focused on
 the housing market in Ames, Iowa. This data set is from the ``House
-Price'' Kaggle competition (\citet{Kaggle2016}). In this competition
-Kaggle competitors attempt build models that best predict housing prices
-based on the Ames, Iowa data set. Over the course of this paper a
-similar approach to this specific Kaggle competition will be taken. The
-first part of the paper will focus on the Ames, Iowa dataset, provide
-the reader with detailed information about the data and any additional
-variables the team created for model building. Analysis of this data
-will then be performed in two parts. In the first part of our analysis,
-we estimate the relationship between house prices, the square footage,
-and neighborhood location in Ames, Iowa. In the second part of our
-analysis, we train a linear regression model to predict house prices in
-Ames, Iowa.
+Prices: Advanced Regression Techniques'' Kaggle competition
+(\citet{Kaggle2016}). In this competition Kaggle competitors attempt
+build models that best predict housing prices based on the Ames, Iowa
+data set. Over the course of this paper a similar approach to this
+specific Kaggle competition will be taken. The first part of the paper
+will focus on the Ames, Iowa dataset, provide the reader with detailed
+information about the data and any additional variables the team created
+for model building. Analysis of this data will then be performed in two
+parts. In the first part of our analysis, we estimate the relationship
+between house prices, the square footage, and neighborhood location in
+Ames, Iowa. In the second part of our analysis, we train a linear
+regression model to predict house prices in Ames, Iowa.
 
 The intent of this paper is to provide the reader with an understanding
 of how linear regression can be applied to data and the analysis that
@@ -178,9 +178,9 @@ building materials used and dwelling type. \citet{DeCock2011}
 
 The numeric variables contain both continuous and discrete values (20
 continuous and 14 discrete). The continuous variables indicate
-information a prospective home buyer would like to understand such as
+information a prospective stakeholder would like to understand such as
 lot size, total square footage, and specific square footage for living
-spaces. The discrete variables provide the prospective home buyer with
+spaces. The discrete variables provide the prospective stakeholder with
 an understanding of items such as number of bedrooms, number of
 bathrooms, etc. \citet{DeCock2011}
 
@@ -212,14 +212,125 @@ ordering was appropriate, as shown in figures X \& X
 A local real estate company, Century 21, would like to understand the
 relationship between living area of a home and sale prices.
 Specifically, the company would like to focus only on sales in certain
-neighborhoods (NAmes, Edwards, and BrkSide). An estimate (or estimates)
-of this information as well as required confidence intervals should be
-provided, along with verification of the model assumptions and
+neighborhoods (North Ames, Edwards, and Brookside). An estimate (or
+estimates) of this information as well as required confidence intervals
+should be provided, along with verification of the model assumptions and
 addressing of suspicious observations. In the conclusion quantify the
 relationship between living area and sale price with respect to these
 three neighborhoods.
 
-\subsection{Assumption Checks}\label{assumption-checks}
+\subsection{Methodology}\label{methodology}
+
+We begin by fitting the following linear regression model:
+
+\begin{equation}
+Price_i = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
++ {\beta_5}GrLivArea_{i}\*Edwards_{i}
++ {\epsilon_i},
+\end{equation}
+
+where \(Price_i\) denotes the price of the i-th house, \(NAmes_i\)
+denotes whether the i-th observation is located in the North Ames
+neighborhood, \(GrLivArea_i\) denotes the above-ground square foot
+living area for the i-th house, and \(Edwards_i\) denotes whether the
+i-th observation is located in the Edwards neighborhood. The comparison
+neighborhood is the Brookside neighborhood. The following two
+interaction terms are included to capture the likely difference in the
+marginal contribution of living area to sale price between
+neighborhoods. \(\epsilon_i\) denotes the error term for the i-th
+observation.
+
+We examine a residual plot to verify the assumptions of the OLS
+estimator and the hypothesis tests for the coefficients.
+
+\includegraphics{HousePricesPaper_files/figure-latex/residualplot-1.pdf}
+
+The top-right qq-plot of the studentized residuals suggests moderate
+skew and the presence of influential observations. The bottom-right plot
+further clarifies the influential observation of interest to be
+observation 339, which has significant leverage and distance. Regressing
+with and without the observations yields significantly different results
+for the Edwards and the Edwards interaction variable, which means we
+cannot simply ignore it. We have no reason to believe that significant
+measurement error has occurred nor can we find any sufficient reason to
+exclude the observation, thus we turn to a log-transformation to reduce
+the influence of this observation. We chose the log-transformation in
+particular for the sake of interpretability.
+
+Our updated model is:
+
+\begin{equation}
+log({Price_i}) = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
++ {\beta_5}GrLivArea_{i}\*Edwards_{i}
++ {\epsilon_i},
+\end{equation}
+
+where ``log'' denotes the natural logarithm. We again examine the
+residuals to find that the relative influence of observation 339 is
+barely lower, though we do get similar results for our question of
+interest with and without the observation. Thus, in some sense, the
+transformation has weakened the influence of outliers.
+
+We find no evidence of non-constant variance or non-linearity, while the
+number of observations gives us sufficient protection from the skewness
+of the residuals. We thus conclude that the log-linear model will
+suffice for the question of interest.
+
+\includegraphics{HousePricesPaper_files/figure-latex/logmodelplot-1.pdf}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(SalePrice) ~ GrLivArea + Neighborhood + GrLivArea * 
+##     Neighborhood, data = relevantData)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.6963 -0.1044  0.0138  0.1107  0.8862 
+## 
+## Coefficients:
+##                                 Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                    1.079e+01  8.702e-02 124.019  < 2e-16 ***
+## GrLivArea                      7.382e-04  6.892e-05  10.712  < 2e-16 ***
+## NeighborhoodNAmes              6.517e-01  9.780e-02   6.664 9.48e-11 ***
+## NeighborhoodEdwards            6.303e-01  9.842e-02   6.405 4.49e-10 ***
+## GrLivArea:NeighborhoodNAmes   -4.141e-04  7.620e-05  -5.435 9.88e-08 ***
+## GrLivArea:NeighborhoodEdwards -5.215e-04  7.551e-05  -6.907 2.11e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2012 on 377 degrees of freedom
+## Multiple R-squared:  0.466,  Adjusted R-squared:  0.4589 
+## F-statistic: 65.79 on 5 and 377 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We find a positive, significant association between above-ground living
+area square footage and the selling price of a home and that this
+significance is maintained between neighborhoods. We estimate that a
+one-hundred square foot increase in above-ground living area is
+associated with a 7\% increase in the median selling price of a home
+with a 95\% confidence interval of {[}6.02\%, 8.73\%{]}. Neither the
+estimate nor the significance of this variable changed with the removal
+of the observation, even in the base linear model. We also find that the
+relationship between square footage and home price changes between
+neighborhoods. We estimate the change in median price per additional 100
+square-feet in North Ames to be 4\% lower than in Brookside, while the
+change in median price per additional 100 square-feet in North Ames is
+5\% lower (after back-transforming the coefficients), with 95\%
+confidence intervals of {[}-5\%, -2\%{]} and {[}-6\%, -3\%{]},
+respectively. That being said, we found that homes in North Ames and
+Edwards had larger median home values than Brookside. We estimate the
+median home value in North Ames to be 92\% larger (95\% confidence
+interval - {[}58\%, 132\%{]}) than Brookside and the median home value
+in Edwards to be 88\% (95\% confidence interval - {[}55\%, 128\%{]})
+larger than in Brookside. These results cannot be generalized outside of
+the sample, nor can we infer a causal relationships from this
+observational analysis. Lastly, we must acknowledge that the presence of
+outliers, particularly observation 339, may have biased our estimates.
+Should we desire to get better estimates of the change in mean/median
+price for an additional 100 square-feet of living area, we will need to
+either get more data or add additional operational specificity to the
+way we define a ``home''.
 
 \subsection{Competing Model
 Comparison}\label{competing-model-comparison}
@@ -246,7 +357,7 @@ have an adjusted \(R^{2}\), CV Press and Kaggle Score. In the conclusion
 describe which model is best at predicting future sale prices of homes
 in Ames, Iowa.
 
-\subsection{Assumption Checks}\label{assumption-checks-1}
+\subsection{Assumption Checks}\label{assumption-checks}
 
 \subsection{Competing Model
 Comparison}\label{competing-model-comparison-1}

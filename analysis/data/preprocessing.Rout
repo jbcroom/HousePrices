@@ -336,6 +336,7 @@ The following object is masked from ‘package:naniar’:
 > housePricesTest$MoSold <- housePricesTest$MoSold %>%
 +   fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
 > 
+> 
 > proc.time()
    user  system elapsed 
-  0.957   0.306   0.897 
+  1.131   0.296   1.065 
