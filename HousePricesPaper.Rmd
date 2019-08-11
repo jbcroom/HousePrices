@@ -44,24 +44,32 @@ The analysis performed for this paper leverages a data set focused on the housin
 
 The intent of this paper is to provide the reader with an understanding of how linear regression can be applied to data and the analysis that must be undertaken to ensure a linear regression model is adequately developed. 
 
-@Sleuth
-
-
 # Ames, Iowa Data
-
+## Data Description
 The data used for this analysis, described in the sections below, comes from the Kaggle Competition "House Prices: Advanced Regression Techniques" (@Kaggle2016). The data set for this competition contains housing related data for Ames, Iowa. The total data set contains 2919 observations and 80 features or variables. Although too numerous to describe here (see the Kaggle website for full descriptors (@Kaggle2016)), these 80 features relate to quantity and quality based attributes of a physical property that may interest any of the key stakeholders (prospective home buyer, home seller, real estate company/agent). For example the data provides answers to questions such as: "How many rooms in the property?", "What is the condition of the kitchen?", "What is the location of the property?", "Is there a basement?". Delving deeper, the data set breaks down into 46 categorical variables and 34 numeric variables.
 
 The categorical variables break down into a relatively equal mix of nominal and ordinal values (23 nominal and 23 ordinal). The ordinal variables indicate a grading of various property related components such as the overall property quality, overall property condition, room specific quality and room specific conditions. The nominal values provide information on various conditions of the property such as building materials used and dwelling type. @DeCock2011
 
 The numeric variables contain both continuous and discrete values (20 continuous and 14 discrete). The continuous variables indicate information a prospective stakeholder would like to understand such as lot size, total square footage, and specific square footage for living spaces. The discrete variables provide the prospective stakeholder with an understanding of items such as number of bedrooms, number of bathrooms, etc. @DeCock2011
 
-In reviewing the data it was determined that a few variables could be removed for reasons noted below: 
+## Exploratory Data Analysis (EDA)
+Initial EDA determined that three variables could be removed for reasons noted below: 
 
-* ID - this field is a record ID field and is not informational for analysis
-* Pool Quality - this field does not contain enough variation to be useful
-* Miscellaneous Feature - this field contains minimial information
+* ID (*ID*) - this field is a record ID field and is not informational for analysis
+* Pool Quality (*PoolQC*) - this field does not contain enough variation to be useful
+* Miscellaneous Feature (*MiscFeature*) - this field contains minimial information
 
-Data quality checks were performed across all remaining variables to address missing values, inconsistent variable names, and to ensure consistent ordering of ordinal variables across all variables of the same type. Comparison analysis was also performed to ensure the variable ordering was appropriate, as shown in figures X & X
+Data quality checks were performed across all remaining variables to address missing values, inconsistent variable names, and to ensure consistent ordering of ordinal variables across all variables of the same type. Comparison analysis was also performed to ensure the variable ordering was appropriate. 
+
+The *LotFrontage* variable did pose a bit of a challenge for the analysis since it was a continuous numerical variable that contained NAs. *LotFrontage* is intended to represent the linear feet of street connected to the property. Initial analysis of house pricing distributions as they relate to LotFrontage was performed to determine impact. The distribution of house prices did not seem to change between missing and non-missing values of selling price. This provided a good indication that missingness of *LotFrontage* was unrelated to the variable of interest. To allow for *LotFrontage* to be leveraged in any models the team imputed the variable. Analysis showed that *Neighborhood*, *LotArea*, *LotShape*, and *MSSubClass* were appropriate variables to impute *LotFrontage*.
+
+##Data Usage
+
+* *Training.csv* - obtained from the Kaggle site above was used to train the the linear regression models
+
+* *Test.csv* - obtained from the Kaggle site was used to test the linear regression models
+
+* Results - datafiles containing the test results of the linear regression models may be found in the GitHub repository located at: https://github.com/KThompson0308/HousePrices.git
 
 
 # Analysis Question I

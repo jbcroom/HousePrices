@@ -149,9 +149,9 @@ of how linear regression can be applied to data and the analysis that
 must be undertaken to ensure a linear regression model is adequately
 developed.
 
-\citet{Sleuth}
-
 \section{Ames, Iowa Data}\label{ames-iowa-data}
+
+\subsection{Data Description}\label{data-description}
 
 The data used for this analysis, described in the sections below, comes
 from the Kaggle Competition ``House Prices: Advanced Regression
@@ -184,26 +184,58 @@ spaces. The discrete variables provide the prospective stakeholder with
 an understanding of items such as number of bedrooms, number of
 bathrooms, etc. \citet{DeCock2011}
 
+\subsection{Exploratory Data Analysis}\label{exploratory-data-analysis}
+
 In reviewing the data it was determined that a few variables could be
 removed for reasons noted below:
 
 \begin{itemize}
 \tightlist
 \item
-  ID - this field is a record ID field and is not informational for
-  analysis
+  ID (\emph{ID}) - this field is a record ID field and is not
+  informational for analysis
 \item
-  Pool Quality - this field does not contain enough variation to be
-  useful
+  Pool Quality (\emph{PoolQC}) - this field does not contain enough
+  variation to be useful
 \item
-  Miscellaneous Feature - this field contains minimial information
+  Miscellaneous Feature (\emph{MiscFeature}) - this field contains
+  minimial information
 \end{itemize}
 
 Data quality checks were performed across all remaining variables to
 address missing values, inconsistent variable names, and to ensure
 consistent ordering of ordinal variables across all variables of the
 same type. Comparison analysis was also performed to ensure the variable
-ordering was appropriate, as shown in figures X \& X
+ordering was appropriate.
+
+The \emph{LotFrontage} variable did pose a bit of a challenge for the
+analysis since it was a continuous numerical variable that contained
+NAs. \emph{LotFrontage} is intended to represent the linear feet of
+street connected to the property. Initial analysis of house pricing
+distributions as they relate to LotFrontage was performed to determine
+impact. The distribution of house prices did not seem to change between
+missing and non-missing values of selling price. This provided a good
+indication that missingness of \emph{LotFrontage} was unrelated to the
+variable of interest. To allow for \emph{LotFrontage} to be leveraged in
+any models the team imputed the variable. Analysis showed that
+\emph{Neighborhood}, \emph{LotArea}, \emph{LotShape}, and
+\emph{MSSubClass} were appropriate variables to impute
+\emph{LotFrontage}.
+
+\subsection{Data Usage}\label{data-usage}
+
+\begin{itemize}
+\item
+  \emph{Training.csv} - obtained from the Kaggle site above was used to
+  train the the linear regression models
+\item
+  \emph{Test.csv} - obtained from the Kaggle site was used to test the
+  linear regression models
+\item
+  Results - datafiles containing the test results of the linear
+  regression models may be found in the GitHub repository located at:
+  \url{https://github.com/KThompson0308/HousePrices.git}
+\end{itemize}
 
 \section{Analysis Question I}\label{analysis-question-i}
 
@@ -242,6 +274,11 @@ observation.
 
 We examine a residual plot to verify the assumptions of the OLS
 estimator and the hypothesis tests for the coefficients.
+
+\begin{verbatim}
+## Warning in inds_combine(.vars, ind_list): '.Random.seed[1]' is not a valid
+## integer, so ignored
+\end{verbatim}
 
 \includegraphics{HousePricesPaper_files/figure-latex/residualplot-1.pdf}
 
@@ -308,8 +345,9 @@ find sufficient evidence to conclude that mean home values are different
 in Edwards as opposed to Brookside. We further estimate that
 approximately 50\% of the variation in home prices is explained by our
 model (Adj. \(R^2\) - 0.4963) These results should not be generalized
-outside of the sample, nor should we infer causal relationships from
-this observational analysis.
+outside of the sample (homes in the relevant neighborhoods with 2500 or
+less square-footage of above-ground living area), nor should we infer
+causal relationships from this observational analysis.
 
 \section{Analysis Question II}\label{analysis-question-ii}
 
