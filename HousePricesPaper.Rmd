@@ -69,7 +69,7 @@ Data quality checks were performed across all remaining variables to address mis
 ## Problem Statement
 A local real estate company, Century 21, would like to understand the relationship between living area of a home and sale prices. Specifically, the company would like to focus only on sales in certain neighborhoods (North Ames, Edwards, and Brookside). An estimate (or estimates) of this information as well as required confidence intervals should be provided, along with verification of the model assumptions and addressing of suspicious observations. In the conclusion quantify the relationship between living area and sale price with respect to these three neighborhoods.
 
-## Methodology
+## Methodology and Results
 
 We begin by fitting the following linear regression model:
 \begin{equation}
@@ -89,40 +89,15 @@ baseModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood, d
 autoplot(baseModel, which = 1:6, label.size = 3)
 ```
 
-The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observation of interest to be observation 339, which has significant leverage and distance. Regressing with and without the observations yields significantly different results for the Edwards and the Edwards interaction variable, which means we cannot simply ignore it. We have no reason to believe that significant measurement error has occurred nor can we find any sufficient reason to exclude the observation, thus we turn to a log-transformation to reduce the influence of this observation. We chose the log-transformation in particular for the sake of interpretability. 
+The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observations of interest which have significant leverage and distance. Regressing with and without the observations yields significantly different results for the Edwards and the Edwards interaction variable, which means we cannot simply ignore it. We chose to reduce the scope of our investigation to homes with an above ground living area of 2500 square-feet and below as the outliers of interest have extremely large values for gross living area (98th percentile and above). There are still outliers present after the removal of these observations, but their removal does not impact the results of our analysis.
 
-Our updated model is:
+We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the linear model will suffice for the question of interest.
 
-\begin{equation}
-log({Price_i}) = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
-+ {\beta_5}GrLivArea_{i}\*Edwards_{i}
-+ {\epsilon_i},
-\end{equation}
-
-where "log" denotes the natural logarithm. We again examine the residuals to find that the relative influence of observation 339 is barely lower, though we do get similar results for our question of interest with and without the observation. Thus, in some sense, the transformation has weakened the influence of outliers. 
-
-We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the log-linear model will suffice for the question of interest. 
-
-
-```{r logmodelplot, echo=FALSE, message=FALSE, warning=FALSE, fig.height=4}
-logModel <- lm(log(SalePrice) ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood, data = relevantData)
-autoplot(logModel, which = 1:6, label.size = 3)
-summary(logModel)
+```{r summary, echo=FALSE, warning=FALSE, message=FALSE}
+summary(baseModel)
 ```
 
-We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a 7% increase in the median selling price of a home with a 95% confidence interval of [6.02%, 8.73%]. Neither the estimate nor the significance of this variable changed with the removal of the observation, even in the base linear model. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in median price per additional 100 square-feet in North Ames to be 4% lower than in Brookside, while the change in median price per additional 100 square-feet in North Ames is 5% lower (after back-transforming the coefficients), with 95% confidence intervals of [-5%, -2%] and [-6%, -3%], respectively. That being said, we found that homes in North Ames and Edwards had larger median home values than Brookside. We estimate the median home value in North Ames to be 92% larger (95% confidence interval - [58%, 132%]) than Brookside and the median home value in Edwards to be 88% (95% confidence interval - [55%, 128%]) larger than in Brookside. These results cannot be generalized outside of the sample, nor can we infer a causal relationships from this observational analysis. Lastly, we must acknowledge that the presence of outliers, particularly observation 339, may have biased our estimates. Should we desire to get better estimates of the change in mean/median price for an additional 100 square-feet of living area, we will need to either get more data or add additional operational specificity to the way we define a "home". 
-
-## Competing Model Comparison
-
-## Parameters
-
-## Conclusion
-
-@Sleuth
-
-@Pearl2009
-
-@Ruppert2015
+We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a $8716 increase in the mean selling price of a home with a 95% confidence interval of [6961, 10471]. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in mean price per additional 100 square-feet in North Ames to be \$3760 lower than in Brookside, while we did not find sufficient evidence to conclude that the change in mean price per additional 100 square-feet is different in Edwards than in Brookside. We also similarly found that homes in North Ames are estimated to have higher mean home values than Brookside. We estimate the median home value in North Ames to be \$60,354 larger (95% confidence interval - [35349, 85359]) than Brookside, but we did not find sufficient evidence to conclude that mean home values are different in Edwards as opposed to Brookside. These results should not be generalized outside of the sample, nor should we infer causal relationships from this observational analysis. 
 
 # Analysis Question II
 

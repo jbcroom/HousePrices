@@ -1,0 +1,26 @@
+---
+title: "Prediction"
+author: "Kevin Thompson"
+date: "August 10, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggfortify)
+
+relevantData <- housePrices_imputed %>%
+                  filter(Neighborhood == "BrkSide" | Neighborhood == "Edwards" | Neighborhood == "NAmes")
+
+```
+
+
+```{r summary, echo=FALSE}
+
+baseModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood ,data = relevantData[-c(339,169,131),])
+newModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood, data = relevantData[-c(339,169,131,188,236,369),])
+autoplot(baseModel, which = 1:6)
+```
+
+

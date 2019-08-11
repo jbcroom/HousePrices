@@ -219,7 +219,7 @@ addressing of suspicious observations. In the conclusion quantify the
 relationship between living area and sale price with respect to these
 three neighborhoods.
 
-\subsection{Methodology}\label{methodology}
+\subsection{Methodology and Results}\label{methodology-and-results}
 
 We begin by fitting the following linear regression model:
 
@@ -247,103 +247,67 @@ estimator and the hypothesis tests for the coefficients.
 
 The top-right qq-plot of the studentized residuals suggests moderate
 skew and the presence of influential observations. The bottom-right plot
-further clarifies the influential observation of interest to be
-observation 339, which has significant leverage and distance. Regressing
-with and without the observations yields significantly different results
-for the Edwards and the Edwards interaction variable, which means we
-cannot simply ignore it. We have no reason to believe that significant
-measurement error has occurred nor can we find any sufficient reason to
-exclude the observation, thus we turn to a log-transformation to reduce
-the influence of this observation. We chose the log-transformation in
-particular for the sake of interpretability.
-
-Our updated model is:
-
-\begin{equation}
-log({Price_i}) = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
-+ {\beta_5}GrLivArea_{i}\*Edwards_{i}
-+ {\epsilon_i},
-\end{equation}
-
-where ``log'' denotes the natural logarithm. We again examine the
-residuals to find that the relative influence of observation 339 is
-barely lower, though we do get similar results for our question of
-interest with and without the observation. Thus, in some sense, the
-transformation has weakened the influence of outliers.
+further clarifies the influential observations of interest which have
+significant leverage and distance. Regressing with and without the
+observations yields significantly different results for the Edwards and
+the Edwards interaction variable, which means we cannot simply ignore
+it. We chose to reduce the scope of our investigation to homes with an
+above ground living area of 2500 square-feet and below as the outliers
+of interest have extremely large values for gross living area (98th
+percentile and above). There are still outliers present after the
+removal of these observations, but their removal does not impact the
+results of our analysis.
 
 We find no evidence of non-constant variance or non-linearity, while the
 number of observations gives us sufficient protection from the skewness
-of the residuals. We thus conclude that the log-linear model will
-suffice for the question of interest.
-
-\includegraphics{HousePricesPaper_files/figure-latex/logmodelplot-1.pdf}
+of the residuals. We thus conclude that the linear model will suffice
+for the question of interest.
 
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = log(SalePrice) ~ GrLivArea + Neighborhood + GrLivArea * 
+## lm(formula = SalePrice ~ GrLivArea + Neighborhood + GrLivArea * 
 ##     Neighborhood, data = relevantData)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.6963 -0.1044  0.0138  0.1107  0.8862 
+##    Min     1Q Median     3Q    Max 
+## -96204 -14568   -310  12601 181131 
 ## 
 ## Coefficients:
-##                                 Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)                    1.079e+01  8.702e-02 124.019  < 2e-16 ***
-## GrLivArea                      7.382e-04  6.892e-05  10.712  < 2e-16 ***
-## NeighborhoodNAmes              6.517e-01  9.780e-02   6.664 9.48e-11 ***
-## NeighborhoodEdwards            6.303e-01  9.842e-02   6.405 4.49e-10 ***
-## GrLivArea:NeighborhoodNAmes   -4.141e-04  7.620e-05  -5.435 9.88e-08 ***
-## GrLivArea:NeighborhoodEdwards -5.215e-04  7.551e-05  -6.907 2.11e-11 ***
+##                                Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   19971.514  12351.125   1.617  0.10672    
+## GrLivArea                        87.163      9.782   8.911  < 2e-16 ***
+## NeighborhoodNAmes             54704.888  13882.334   3.941 9.69e-05 ***
+## NeighborhoodEdwards           68381.591  13969.511   4.895 1.46e-06 ***
+## GrLivArea:NeighborhoodNAmes     -32.847     10.815  -3.037  0.00256 ** 
+## GrLivArea:NeighborhoodEdwards   -57.412     10.718  -5.357 1.48e-07 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.2012 on 377 degrees of freedom
-## Multiple R-squared:  0.466,  Adjusted R-squared:  0.4589 
-## F-statistic: 65.79 on 5 and 377 DF,  p-value: < 2.2e-16
+## Residual standard error: 28550 on 377 degrees of freedom
+## Multiple R-squared:  0.4474, Adjusted R-squared:   0.44 
+## F-statistic: 61.04 on 5 and 377 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 We find a positive, significant association between above-ground living
 area square footage and the selling price of a home and that this
 significance is maintained between neighborhoods. We estimate that a
 one-hundred square foot increase in above-ground living area is
-associated with a 7\% increase in the median selling price of a home
-with a 95\% confidence interval of {[}6.02\%, 8.73\%{]}. Neither the
-estimate nor the significance of this variable changed with the removal
-of the observation, even in the base linear model. We also find that the
-relationship between square footage and home price changes between
-neighborhoods. We estimate the change in median price per additional 100
-square-feet in North Ames to be 4\% lower than in Brookside, while the
-change in median price per additional 100 square-feet in North Ames is
-5\% lower (after back-transforming the coefficients), with 95\%
-confidence intervals of {[}-5\%, -2\%{]} and {[}-6\%, -3\%{]},
-respectively. That being said, we found that homes in North Ames and
-Edwards had larger median home values than Brookside. We estimate the
-median home value in North Ames to be 92\% larger (95\% confidence
-interval - {[}58\%, 132\%{]}) than Brookside and the median home value
-in Edwards to be 88\% (95\% confidence interval - {[}55\%, 128\%{]})
-larger than in Brookside. These results cannot be generalized outside of
-the sample, nor can we infer a causal relationships from this
-observational analysis. Lastly, we must acknowledge that the presence of
-outliers, particularly observation 339, may have biased our estimates.
-Should we desire to get better estimates of the change in mean/median
-price for an additional 100 square-feet of living area, we will need to
-either get more data or add additional operational specificity to the
-way we define a ``home''.
-
-\subsection{Competing Model
-Comparison}\label{competing-model-comparison}
-
-\subsection{Parameters}\label{parameters}
-
-\subsection{Conclusion}\label{conclusion}
-
-\citet{Sleuth}
-
-\citet{Pearl2009}
-
-\citet{Ruppert2015}
+associated with a \$8716 increase in the mean selling price of a home
+with a 95\% confidence interval of {[}6961, 10471{]}. We also find that
+the relationship between square footage and home price changes between
+neighborhoods. We estimate the change in mean price per additional 100
+square-feet in North Ames to be \$3760 lower than in Brookside, while we
+did not find sufficient evidence to conclude that the change in mean
+price per additional 100 square-feet is different in Edwards than in
+Brookside. We also similarly found that homes in North Ames are
+estimated to have higher mean home values than Brookside. We estimate
+the median home value in North Ames to be \$60,354 larger (95\%
+confidence interval - {[}35349, 85359{]}) than Brookside, but we did not
+find sufficient evidence to conclude that mean home values are different
+in Edwards as opposed to Brookside. These results should not be
+generalized outside of the sample, nor should we infer causal
+relationships from this observational analysis.
 
 \section{Analysis Question II}\label{analysis-question-ii}
 
@@ -360,11 +324,11 @@ in Ames, Iowa.
 \subsection{Assumption Checks}\label{assumption-checks}
 
 \subsection{Competing Model
-Comparison}\label{competing-model-comparison-1}
+Comparison}\label{competing-model-comparison}
 
-\subsection{Parameters}\label{parameters-1}
+\subsection{Parameters}\label{parameters}
 
-\subsection{Conclusion}\label{conclusion-1}
+\subsection{Conclusion}\label{conclusion}
 
 \citet{Hastie2009} \citet{Trefethen1997}
 
