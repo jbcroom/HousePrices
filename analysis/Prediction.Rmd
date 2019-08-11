@@ -8,19 +8,38 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(ggfortify)
-
-relevantData <- housePrices_imputed %>%
-                  filter(Neighborhood == "BrkSide" | Neighborhood == "Edwards" | Neighborhood == "NAmes")
-
+library(MASS)
+load("data/.RData")
 ```
 
 
-```{r summary, echo=FALSE}
+```{r summary, echo=TRUE}
 
-baseModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood ,data = relevantData[-c(339,169,131),])
-newModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood, data = relevantData[-c(339,169,131,188,236,369),])
-autoplot(baseModel, which = 1:6)
+forwardmodel <- lm(SalePrice ~ OverallQual + GrLivArea + Neighborhood, data = housePrices_imputed)
+backwardmodel <- lm(SalePrice ~ GarageYrBlt + Exterior2nd + MSSubClass + Exterior1st, data=housePrices_imputed)
+backwardmodel$xlevels <- union(backwardmodel$xlevels[["Exterior2nd"]], levels(housePricesTest$Exterior2nd))
+stepwisemodel <- lm(SalePrice ~ OverallQual + GrLivArea + Neighborhood, data = housePrices_imputed)
+stepwisemodel$xlevels <- union(stepwisemodel$xlevels[["MSSubClass"]], levels(housePricesTest$MSSubClass))
+custom <- lm(SalePrice ~ OverallQual + GrLivArea + Neighborhood, data=housePrices_imputed)
+
+
+resultstable <- data.frame(AjustedR2 = c(Forward = 0.81, Backward = 0.92, Stepwise = 0.86, Custom = 0.81),
+                           CVPress = c(Forward = 1.87E12, Backward = 1.63E12, Stepwise = 1.64E12, Custom = 1.89E12),
+                           KaggleScore = c(Forward = 0.17697, Backward = 0.62166, Stepwise = 0.26728, Custom = 0.17675),
+                           RMSE = c(Foward = 34869, Backward = 22251 , Stepwise = 29145 , Custom = 34529))
+
+forwardpredict <- predict(forwardmodel, newdata = housePricesTest)
+backwardpredict <- predict(backwardmodel, newdata = housePricesTest)
+stepwisepredict <- predict(stepwisemodel, newdata = housePricesTest)
+custompredict <- predict(custom, newdata = housePricesTest)
+```
+
+
+```{r predict, echo=TRUE}
+write_csv(data.frame(Id = housePricesTest$Id, SalePrice = forwardpredict), "forwardsubmit.csv")
+write_csv(data.frame(Id = housePricesTest$Id, SalePrice = backwardpredict), "backwardsubmit.csv")
+write_csv(data.frame(Id = housePricesTest$Id, SalePrice = stepwisepredict), "stepwisesubmit.csv")
+write_csv(data.frame(Id = housePricesTest$Id, SalePrice = custompredict), "customsubmit.csv")
 ```
 
 

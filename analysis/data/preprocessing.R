@@ -189,10 +189,6 @@ housePricesTest <- read_csv("test.csv",
 housePrices$PoolQC <- NULL  #not enough variation in data to be useful
 housePrices$MiscFeature <- NULL  #not enough data
 
-# Remove missing rows for variables very few missing values
-housePrices <- housePrices %>%
-                filter(!is.na(MasVnrType),
-                       !is.na(Electrical))
 
 # Add missing level to account for variables with false NAs (NAs that really just mean "doesn't have X")
 housePrices <- housePrices %>%
@@ -234,6 +230,8 @@ housePrices$GarageFinish <- housePrices$GarageFinish %>%
                               fct_relevel("NA", "Unf", "RFn", "Fin")
 housePrices$MoSold <- housePrices$MoSold %>%
                         fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
+housePrices$Exterior2nd <- housePrices$Exterior2nd %>%
+                            fct_expand("NA")
 
 # Make Column Names Syntactically Correct
 housePrices <- housePrices %>%
@@ -294,3 +292,4 @@ housePricesTest$GarageFinish <- housePricesTest$GarageFinish %>%
 housePricesTest$MoSold <- housePricesTest$MoSold %>%
   fct_relevel("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
 
+housePricesTest$GarageYrBlt <- impute_mean(housePricesTest$GarageYrBlt)

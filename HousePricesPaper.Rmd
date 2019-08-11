@@ -97,18 +97,16 @@ We find no evidence of non-constant variance or non-linearity, while the number 
 summary(baseModel)
 ```
 
-We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a $8716 increase in the mean selling price of a home with a 95% confidence interval of [6961, 10471]. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in mean price per additional 100 square-feet in North Ames to be \$3760 lower than in Brookside, while we did not find sufficient evidence to conclude that the change in mean price per additional 100 square-feet is different in Edwards than in Brookside. We also similarly found that homes in North Ames are estimated to have higher mean home values than Brookside. We estimate the median home value in North Ames to be \$60,354 larger (95% confidence interval - [35349, 85359]) than Brookside, but we did not find sufficient evidence to conclude that mean home values are different in Edwards as opposed to Brookside. These results should not be generalized outside of the sample, nor should we infer causal relationships from this observational analysis. 
+We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a \$8716 increase in the mean selling price of a home with a 95% confidence interval of [6961, 10471]. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in mean price per additional 100 square-feet in North Ames to be \$3760 lower than in Brookside, while we did not find sufficient evidence to conclude that the change in mean price per additional 100 square-feet is different in Edwards than in Brookside. We also similarly found that homes in North Ames are estimated to have higher mean home values than Brookside. We estimate the median home value in North Ames to be \$60,354 larger (95% confidence interval - [35349, 85359]) than Brookside, but we did not find sufficient evidence to conclude that mean home values are different in Edwards as opposed to Brookside. We further estimate that approximately 50% of the variation in home prices is explained by our model (Adj. $R^2$ - 0.4963) These results should not be generalized outside of the sample (homes in the relevant neighborhoods with 2500 or less square-footage of above-ground living area), nor should we infer causal relationships from this observational analysis.
 
 # Analysis Question II
 
 ## Problem Statement
 Build a predictive model, leveraging techniques learned in DS 6371 only, to predict sales prices of homes in all of Ames, Iowa. The goal is to produce four models: a forward selection model, a backward selection model, a stepwise selection model and a custom model. Each model should have an adjusted $R^{2}$, CV Press and Kaggle Score. In the conclusion describe which model is best at predicting future sale prices of homes in Ames, Iowa.
 
-## Assumption Checks
-
 ## Competing Model Comparison
 
-## Parameters
+
 
 ## Conclusion
 
