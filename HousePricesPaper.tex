@@ -93,10 +93,26 @@
   \postdate{\par}
     \date{Data Science Program, Southern Methodist University, USA \break}
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
 \usepackage{amsmath}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{setspace}
+\usepackage{hyperref}
 \onehalfspacing
 \setcitestyle{round}
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
@@ -120,7 +136,7 @@ linear regression model to predict house prices in Ames, Iowa.
 
 Price prediction is pivotal for real estate. Homeowners on the sell-side
 want to know when to sell, what to renovate, and how much profit they
-can expect from their efforts. Homebuyers want to know whether they are
+can expect from their efforts. Home buyers want to know whether they are
 getting a fair price, where to look for homes in their budget, and the
 various trade-offs that accompany a purchasing decision. Real estate
 companies navigate both sides of real estate; hence, they too are a key
@@ -132,17 +148,17 @@ some of the guess work out of property pricing.
 The analysis performed for this paper leverages a data set focused on
 the housing market in Ames, Iowa. This data set is from the ``House
 Prices: Advanced Regression Techniques'' Kaggle competition
-(\citet{Kaggle2016}). In this competition Kaggle competitors attempt
+(\citet{Kaggle2016}). In this competition, Kaggle competitors attempt
 build models that best predict housing prices based on the Ames, Iowa
 data set. Over the course of this paper a similar approach to this
 specific Kaggle competition will be taken. The first part of the paper
-will focus on the Ames, Iowa dataset, provide the reader with detailed
-information about the data and any additional variables the team created
-for model building. Analysis of this data will then be performed in two
-parts. In the first part of our analysis, we estimate the relationship
-between house prices, the square footage, and neighborhood location in
-Ames, Iowa. In the second part of our analysis, we train a linear
-regression model to predict house prices in Ames, Iowa.
+will focus on the Ames, Iowa data set, providing the reader with an
+understanding of the Exploratory Data Analysis (EDA) that occurred on
+the data.. Analysis of this data will then be performed in two parts. In
+the first part of our analysis, we estimate the relationship between
+house prices, the square footage, and neighborhood location in Ames,
+Iowa. In the second part of the analysis, we train a linear regression
+model to predict house prices in Ames, Iowa.
 
 The intent of this paper is to provide the reader with an understanding
 of how linear regression can be applied to data and the analysis that
@@ -200,7 +216,7 @@ noted below:
   variation to be useful
 \item
   Miscellaneous Feature (\emph{MiscFeature}) - this field contains
-  minimial information
+  minimal information
 \end{itemize}
 
 Data quality checks were performed across all remaining variables to
@@ -210,16 +226,16 @@ same type. Comparison analysis was also performed to ensure the variable
 ordering was appropriate.
 
 The \emph{LotFrontage} variable did pose a bit of a challenge for the
-analysis since it was a continuous numerical variable that contained
-NAs. \emph{LotFrontage} is intended to represent the linear feet of
-street connected to the property. Initial analysis of house pricing
-distributions as they relate to LotFrontage was performed to determine
-impact. The distribution of house prices did not seem to change between
-missing and non-missing values of selling price. This provided a good
-indication that missingness of \emph{LotFrontage} was unrelated to the
-variable of interest. To allow for \emph{LotFrontage} to be leveraged in
-any models the team imputed the variable. Analysis showed that
-\emph{Neighborhood}, \emph{LotArea}, \emph{LotShape}, and
+analysis since it is a continuous numerical variable that contained NAs.
+\emph{LotFrontage} is intended to represent the linear feet of street
+connected to the property. Initial analysis of house pricing
+distributions as they relate to \emph{LotFrontage} was performed to
+determine impact. The distribution of house prices did not seem to
+change between missing and non-missing values of selling price. This
+provided a good indication that missingness of \emph{LotFrontage} was
+unrelated to the variable of interest. To allow for \emph{LotFrontage}
+to be leveraged in any models the team imputed the variable. Analysis
+showed that \emph{Neighborhood}, \emph{LotArea}, \emph{LotShape}, and
 \emph{MSSubClass} were appropriate variables to impute
 \emph{LotFrontage}.
 
@@ -233,7 +249,7 @@ any models the team imputed the variable. Analysis showed that
   \emph{Test.csv} - obtained from the Kaggle site was used to test the
   linear regression models
 \item
-  Results - datafiles containing the test results of the linear
+  Results - data files containing the test results of the linear
   regression models may be found in the GitHub repository located at:
   \url{https://github.com/KThompson0308/HousePrices.git}
 \end{itemize}
@@ -259,7 +275,7 @@ We begin by fitting the following linear regression model:
 \begin{equation}
 Price_i = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
 + {\beta_5}GrLivArea_{i}\*Edwards_{i}
-+ {\epsilon_i},
++ {\epsilon_i}
 \end{equation}
 
 where \(Price_i\) denotes the price of the i-th house, \(NAmes_i\)
@@ -275,11 +291,6 @@ observation.
 
 We examine a residual plot to verify the assumptions of the OLS
 estimator and the hypothesis tests for the coefficients.
-
-\begin{verbatim}
-## Warning in inds_combine(.vars, ind_list): '.Random.seed[1]' is not a valid
-## integer, so ignored
-\end{verbatim}
 
 \includegraphics{HousePricesPaper_files/figure-latex/residualplot-1.pdf}
 
@@ -335,8 +346,8 @@ associated with a \$8716 increase in the mean selling price of a home
 with a 95\% confidence interval of {[}6961, 10471{]}. We also find that
 the relationship between square footage and home price changes between
 neighborhoods. We estimate the change in mean price per additional 100
-square-feet in North Ames to be \$3760 lower than in Brookside, while we
-did not find sufficient evidence to conclude that the change in mean
+square-feet in North Ames to be \$3760 lower than in Brookside,y while
+we did not find sufficient evidence to conclude that the change in mean
 price per additional 100 square-feet is different in Edwards than in
 Brookside. We also similarly found that homes in North Ames are
 estimated to have higher mean home values than Brookside. We estimate
@@ -362,14 +373,46 @@ have an adjusted \(R^{2}\), CV Press and Kaggle Score. In the conclusion
 describe which model is best at predicting future sale prices of homes
 in Ames, Iowa.
 
+\subsection{Model Selection}\label{model-selection}
+
+\subsection{Forward Selection}\label{forward-selection}
+
+The model summary may be found in
+\hyperref[sec:FwdModelTable] {Table 4.1}
+
+\subsubsection{}\label{section}
+
 \subsection{Competing Model
 Comparison}\label{competing-model-comparison}
 
 \subsection{Conclusion}\label{conclusion}
 
-\citet{Hastie2009} \citet{Trefethen1997}
+Model selection methods such as the forward, stepwise and backwards
+methods enabled model performance to be improved by reducing the number
+of factors to those of statistical significance. Each model selection
+method had various strengths as can be seen in Table X.X but the most
+accurate results came from the backwards model.We conclude that the
+backwards model was the most predictive and statistically significant
+model. With an Adjusted \(R^2\) that is higher than the other models as
+well as the lowest PRESS statistic, this model is measurably more
+accurate than the others and therefore the one we recommend.
 
-\section{Appendix}\label{appendix}
+\section{List of Tables}\label{list-of-tables}
+
+\subsection{Analysis I}\label{analysis-i}
+
+\subsection{Analysis II}\label{analysis-ii}
+
+\section{ForwardModelTable}
+\label{sec:FwdModelTable}
+
+\subsubsection{Forward Model Selection}\label{forward-model-selection}
+
+\subsubsection{Backward Model Selection}\label{backward-model-selection}
+
+\subsubsection{Stepwise Model Selection}\label{stepwise-model-selection}
+
+\subsubsection{Custom Model Selection}\label{custom-model-selection}
 
 \renewcommand\refname{References}
 \bibliography{HousePrices.bib}

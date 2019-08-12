@@ -2,7 +2,9 @@
 title: "Prediction"
 author: "Kevin Thompson"
 date: "August 10, 2019"
-output: html_document
+output: 
+  html_document:
+  keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -21,7 +23,6 @@ backwardmodel$xlevels <- union(backwardmodel$xlevels[["Exterior2nd"]], levels(ho
 stepwisemodel <- lm(SalePrice ~ OverallQual + GrLivArea + Neighborhood, data = housePrices_imputed)
 stepwisemodel$xlevels <- union(stepwisemodel$xlevels[["MSSubClass"]], levels(housePricesTest$MSSubClass))
 custom <- lm(SalePrice ~ OverallQual + GrLivArea + Neighborhood, data=housePrices_imputed)
-
 
 resultstable <- data.frame(AjustedR2 = c(Forward = 0.81, Backward = 0.92, Stepwise = 0.86, Custom = 0.81),
                            CVPress = c(Forward = 1.87E12, Backward = 1.63E12, Stepwise = 1.64E12, Custom = 1.89E12),

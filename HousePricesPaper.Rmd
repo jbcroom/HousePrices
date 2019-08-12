@@ -22,6 +22,7 @@ header-includes:
    - \usepackage[utf8]{inputenc}
    - \usepackage[T1]{fontenc}
    - \usepackage{setspace}
+   - \usepackage{hyperref}
    - \onehalfspacing
    - \setcitestyle{round}
    - \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
@@ -31,16 +32,18 @@ editor_options:
 
 ```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
 library(tidyverse)
+library(ggfortify)
+library(kableExtra)
+
 load("analysis/data/.RData")
 relevantData <- housePrices_imputed %>%
                   filter(Neighborhood == "NAmes" | Neighborhood == "BrkSide" | Neighborhood == "Edwards")
-library(ggfortify)
 ```
 
 # Introduction
-Price prediction is pivotal for real estate. Homeowners on the sell-side want to know when to sell, what to renovate, and how much profit they can expect from their efforts. Homebuyers want to know whether they are getting a fair price, where to look for homes in their budget, and the various trade-offs that accompany a purchasing decision. Real estate companies navigate both sides of real estate; hence, they too are a key stakeholder. These stakeholders utilize multiple factors related to real estate to determine the fair price for the property. These same factors can be built into a model for price prediction that assists in taking some of the guess work out of property pricing.
+Price prediction is pivotal for real estate. Homeowners on the sell-side want to know when to sell, what to renovate, and how much profit they can expect from their efforts. Home buyers want to know whether they are getting a fair price, where to look for homes in their budget, and the various trade-offs that accompany a purchasing decision. Real estate companies navigate both sides of real estate; hence, they too are a key stakeholder. These stakeholders utilize multiple factors related to real estate to determine the fair price for the property. These same factors can be built into a model for price prediction that assists in taking some of the guess work out of property pricing.
 
-The analysis performed for this paper leverages a data set focused on the housing market in Ames, Iowa. This data set is from the "House Prices: Advanced Regression Techniques" Kaggle competition (@Kaggle2016). In this competition, Kaggle competitors attempt build models that best predict housing prices based on the Ames, Iowa data set. Over the course of this paper a similar approach to this specific Kaggle competition will be taken. The first part of the paper will focus on the Ames, Iowa dataset, providing the reader with an understanding of the Exploratorary Data Analysis (EDA) that occurred on the data.. Analysis of this data will then be performed in two parts. In the first part of our analysis, we estimate the relationship between house prices, the square footage, and neighborhood location in Ames, Iowa. In the second part of the analysis, we train a linear regression model to predict house prices in Ames, Iowa. 
+The analysis performed for this paper leverages a data set focused on the housing market in Ames, Iowa. This data set is from the "House Prices: Advanced Regression Techniques" Kaggle competition (@Kaggle2016). In this competition, Kaggle competitors attempt build models that best predict housing prices based on the Ames, Iowa data set. Over the course of this paper a similar approach to this specific Kaggle competition will be taken. The first part of the paper will focus on the Ames, Iowa data set, providing the reader with an understanding of the Exploratory Data Analysis (EDA) that occurred on the data.. Analysis of this data will then be performed in two parts. In the first part of our analysis, we estimate the relationship between house prices, the square footage, and neighborhood location in Ames, Iowa. In the second part of the analysis, we train a linear regression model to predict house prices in Ames, Iowa. 
 
 The intent of this paper is to provide the reader with an understanding of how linear regression can be applied to data and the analysis that must be undertaken to ensure a linear regression model is adequately developed. 
 
@@ -57,7 +60,7 @@ Initial EDA determined that three variables could be removed for reasons noted b
 
 * ID (*ID*) - this field is a record ID field and is not informational for analysis
 * Pool Quality (*PoolQC*) - this field does not contain enough variation to be useful
-* Miscellaneous Feature (*MiscFeature*) - this field contains minimial information
+* Miscellaneous Feature (*MiscFeature*) - this field contains minimal information
 
 Data quality checks were performed across all remaining variables to address missing values, inconsistent variable names, and to ensure consistent ordering of ordinal variables across all variables of the same type. Comparison analysis was also performed to ensure the variable ordering was appropriate. 
 
@@ -69,7 +72,7 @@ The *LotFrontage* variable did pose a bit of a challenge for the analysis since 
 
 * *Test.csv* - obtained from the Kaggle site was used to test the linear regression models
 
-* Results - datafiles containing the test results of the linear regression models may be found in the GitHub repository located at: https://github.com/KThompson0308/HousePrices.git
+* Results - data files containing the test results of the linear regression models may be found in the GitHub repository located at: https://github.com/KThompson0308/HousePrices.git
 
 
 # Analysis Question I
@@ -83,7 +86,7 @@ We begin by fitting the following linear regression model:
 \begin{equation}
 Price_i = {\beta_0} + {\beta_1}GrLivArea_{i} + {\beta_2}NAmes_{i} + {\beta_3}Edwards_{i} + {\beta_4}GrLivArea_{i}\*NAmes_{i}
 + {\beta_5}GrLivArea_{i}\*Edwards_{i}
-+ {\epsilon_i},
++ {\epsilon_i}
 \end{equation}
 
 where $Price_i$ denotes the price of the i-th house, $NAmes_i$ denotes whether the i-th observation is located in the North Ames neighborhood,
@@ -92,7 +95,7 @@ $GrLivArea_i$ denotes the above-ground square foot living area for the i-th hous
 We examine a residual plot to verify the assumptions of the OLS estimator and the hypothesis tests for the coefficients.
 
 
-```{r residualplot, echo=FALSE, fig.height=5}
+```{r residualplot, echo=FALSE, fig.height=5, warning=FALSE, message=FALSE}
 baseModel <- lm(SalePrice ~ GrLivArea + Neighborhood + GrLivArea*Neighborhood, data = relevantData)
 autoplot(baseModel, which = 1:6, label.size = 3)
 ```
@@ -105,22 +108,154 @@ We find no evidence of non-constant variance or non-linearity, while the number 
 summary(baseModel)
 ```
 
-We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a \$8716 increase in the mean selling price of a home with a 95% confidence interval of [6961, 10471]. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in mean price per additional 100 square-feet in North Ames to be \$3760 lower than in Brookside, while we did not find sufficient evidence to conclude that the change in mean price per additional 100 square-feet is different in Edwards than in Brookside. We also similarly found that homes in North Ames are estimated to have higher mean home values than Brookside. We estimate the median home value in North Ames to be \$60,354 larger (95% confidence interval - [35349, 85359]) than Brookside, but we did not find sufficient evidence to conclude that mean home values are different in Edwards as opposed to Brookside. We further estimate that approximately 50% of the variation in home prices is explained by our model (Adj. $R^2$ - 0.4963) These results should not be generalized outside of the sample (homes in the relevant neighborhoods with 2500 or less square-footage of above-ground living area), nor should we infer causal relationships from this observational analysis.
+We find a positive, significant association between above-ground living area square footage and the selling price of a home and that this significance is maintained between neighborhoods. We estimate that a one-hundred square foot increase in above-ground living area is associated with a \$8716 increase in the mean selling price of a home with a 95% confidence interval of [6961, 10471]. We also find that the relationship between square footage and home price changes between neighborhoods. We estimate the change in mean price per additional 100 square-feet in North Ames to be \$3760 lower than in Brookside,y while we did not find sufficient evidence to conclude that the change in mean price per additional 100 square-feet is different in Edwards than in Brookside. We also similarly found that homes in North Ames are estimated to have higher mean home values than Brookside. We estimate the median home value in North Ames to be \$60,354 larger (95% confidence interval - [35349, 85359]) than Brookside, but we did not find sufficient evidence to conclude that mean home values are different in Edwards as opposed to Brookside. We further estimate that approximately 50% of the variation in home prices is explained by our model (Adj. $R^2$ - 0.4963) These results should not be generalized outside of the sample (homes in the relevant neighborhoods with 2500 or less square-footage of above-ground living area), nor should we infer causal relationships from this observational analysis.
 
 # Analysis Question II
 
 ## Problem Statement
 Build a predictive model, leveraging techniques learned in DS 6371 only, to predict sales prices of homes in all of Ames, Iowa. The goal is to produce four models: a forward selection model, a backward selection model, a stepwise selection model and a custom model. Each model should have an adjusted $R^{2}$, CV Press and Kaggle Score. In the conclusion describe which model is best at predicting future sale prices of homes in Ames, Iowa.
 
+## Model Selection
+##Forward Selection
+\begin{equation}
+Price_i = 125720.891 + 2022656.085\*OverallQual.L + 77442.758\*OverallQual.Q + 51.374\*GrLivArea 
+          + 28941.275\*NeighborhoodVeenker + 45605.370\*NeighborhoodNoRidge -11631.021\*NeighborhoodMitchel 
+          - 11578.040\*NeighborhoodNWAmes - 49634.510\*NeighborhoodOldTown - 31786.818\*NeighborhoodBrkSide 
+          - 19378.174\*NeighborhoodSawyer + 32500.779\*NeighborhoodNridgHt - 19614.926\*NeighborhoodNAmes 
+          - 50384.386\*NeighborhoodIDOTRR - 44753.377\*NeighborhoodMeadowV - 39057.786\*NeighborhoodEdwards 
+          + 39637.732\*NeighborhoodStoneBr + 14943.782\*NeighborhoodClearCr - 25728.816\*NeighborhoodNPkVill 
+          - 54871.689\*NeighborhoodBrDale -49292.633\*NeighborhoodSWISU
+          
+\end{equation}
+
+The model summary may be found in \hyperref[sec:FwdModelTable] {Table 5.1}
+
+The fit diagnostics and residuals for sale price may be found in \hyperref[sec:FwdModelFig] {Figure 6.1}. The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observations of interest which have significant leverage and distance. We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the linear model will suffice for the question of interest. We can also conclude based on the data that all samples are unique sales in a free housing market, support the assumption of independence
+
+The model performance can be seen in \hyperref[sec:FwdModelTable] {Table 5.1} and Kaggle test results can be seen in the  \hyperref[sec:KaggTable] Competing Model Comparison section.
+
+##Backward Selection
+\begin{equation}
+Price_i = -2510440.7 + 1379.1\*GarageYrBlt + 61990.7\*Exterior2ndImStucc - 32976.9\*MSSubClass20 
+          - 37385.0\*MSSubClass50 - 45322.1\*MSSubClass50 -45322.1\*MSSubClass190 -60173.7\*MSSubClass45
+          -73513.2\*MSSubClass90 - 51716.4\*MSSubClass120 - 72768.0\*MSSubClass30 - 69215.6\*MSSubClass85
+          -40829.6\*MSSubClass80 - 96609.6\*MSSubClass160 - 143864.7\*MSSubClass180 + 54784.3\*Exterior1stBrkFace
+          
+\end{equation}
+
+The model summary may be found in \hyperref[sec:BackModelTable] {Table 5.2}
+
+The fit diagnostics and residuals for sale price may be found in \hyperref[sec:BackModelFig] {Figure 6.2}. The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observations of interest which have significant leverage and distance. We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the linear model will suffice for the question of interest. We can also conclude based on the data that all samples are unique sales in a free housing market, support the assumption of independence
+
+The model performance can be seen in \hyperref[sec:BackModelTable] {Table 5.2} and Kaggle test results can be seen in the \hyperref[sec:KaggTable] Competing Model Comparison section.
+
+##Stepwise Selection
+\begin{equation}
+Price_i = 125720.891 + 202656.085\*OverallQual.L + 77442.758\*OverallQual.Q 
+          + 51.374\*GrLivArea + 28941.275\*NeighborhoodVeenker 
+          + 45605.370\*NeighborhoodNoRidge - 11631.021\*NeighborhoodMitchel
+          - 11578.040\*NeighborhoodNWAmes - 49634.510\* NeighborhoodOldTown
+          - 31786.818\* NeighborhoodBrkSide - 19378.174\*NeighborhoodSawyer
+          + 32500.779\*NeighborhoodNridgHt - 19614.926\*NeighborhoodNAmes
+          - 50384.386\*NeighborhoodIDOTRR - 44753.377\*NeighborhoodMeadowV
+          - 39057.786\*NeighborhoodEdwards + 39637.732\*NeighborhoodStoneBr
+          + 14943.782\*NeighborhoodClearCr - 25728.816\*NeighborhoodNPkVill
+          - 54871.689\*NeighborhoodBrDale - 49292.633\*NeighborhoodSWISU
+          
+\end{equation}
+
+The model summary may be found in \hyperref[sec:SetpModelTable] {Table 5.3}
+
+The fit diagnostics and residuals for sale price may be found in \hyperref[sec:StepModelFig] {Figure 6.3}. The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observations of interest which have significant leverage and distance. We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the linear model will suffice for the question of interest. We can also conclude based on the data that all samples are unique sales in a free housing market, support the assumption of independence
+
+The model performance can be seen in \hyperref[sec:StepModelTable] {Table 5.3} and Kaggle test results can be seen in the  \hyperref[sec:KaggTable] Competing Model Comparison section.
+
+##Custom Selection
+\begin{equation}
+Price_i = 125720.891 + 2022656.085\*OverallQual.L + 77442.758\*OverallQual.Q + 51.374\*GrLivArea 
+          + 28941.275\*NeighborhoodVeenker + 45605.370\*NeighborhoodNoRidge -11631.021\*NeighborhoodMitchel 
+          - 11578.040\*NeighborhoodNWAmes - 49634.510\*NeighborhoodOldTown - 31786.818\*NeighborhoodBrkSide 
+          - 19378.174\*NeighborhoodSawyer + 32500.779\*NeighborhoodNridgHt - 19614.926\*NeighborhoodNAmes 
+          - 50384.386\*NeighborhoodIDOTRR - 44753.377\*NeighborhoodMeadowV - 39057.786\*NeighborhoodEdwards 
+          + 39637.732\*NeighborhoodStoneBr + 14943.782\*NeighborhoodClearCr - 25728.816\*NeighborhoodNPkVill 
+          - 54871.689\*NeighborhoodBrDale -49292.633\*NeighborhoodSWISU
+          
+\end{equation}
+
+The model summary may be found in \hyperref[sec:CustoModelTable] {Table 5.4}
+
+The fit diagnostics and residuals for sale price may be found in \hyperref[sec:CustomModelFig] {Figure 6.4}. The top-right qq-plot of the studentized residuals suggests moderate skew and the presence of influential observations. The bottom-right plot further clarifies the influential observations of interest which have significant leverage and distance. We find no evidence of non-constant variance or non-linearity, while the number of observations gives us sufficient protection from the skewness of the residuals. We thus conclude that the linear model will suffice for the question of interest. We can also conclude based on the data that all samples are unique sales in a free housing market, support the assumption of independence
+
+The model performance can be seen in \hyperref[sec:CustomModelTable] {Table 5.4} and Kaggle test results can be seen in the  \hyperref[sec:KaggTable] Competing Model Comparison section.
+
+
+\section{KaggleTable}
+\label{sec:KaggTable}
 ## Competing Model Comparison
-
-
+```{r model_compare, echo=FALSE, warning=FALSE, message=FALSE}
+kable(resultstable)
+```
 
 ## Conclusion
+Model selection methods such as the forward, stepwise and backwards methods enabled model performance to be improved by reducing the number of factors to those of statistical significance. Each model selection method had various strengths as can be seen in Table X.X but the most accurate results came from the backwards model.We conclude that the backwards model was the most predictive and statistically significant model. With an Adjusted $R^2$ that is higher than the other models as well as the lowest PRESS statistic, this model is measurably more accurate than the others and therefore the one we recommend. 
 
-@Hastie2009
-@Trefethen1997
+# List of Tables
+## Analysis II
+\section{ForwardModelTable}
+\label{sec:FwdModelTable}
+### Table 5.1 - Forward Model Selection
+```{r forward_model_tab, echo=FALSE, warning=FALSE, message=FALSE}
+summary(forwardmodel)
+```
 
-# Appendix
+\section{BackwardModelTable}
+\label{sec:BackModelTable}
+### Table 5.2 - Backward Model Selection
+```{r backward_model_tab, echo=FALSE, warning=FALSE, message=FALSE}
+summary(backwardmodel)
+```
 
+\section{StepwiseModelTable}
+\label{sec:StepModelTable}
+### Table 5.3 - Stepwise Model Selection
+```{r stepwise_model_tab, echo=FALSE, warning=FALSE, message=FALSE}
+summary(stepwisemodel)
+```
+
+\section{CustomModelTable}
+\label{sec:CustomModelTable}
+### Table 5.4 - Custom Model Selection
+```{r custom_model_tab, echo=FALSE, warning=FALSE, message=FALSE}
+summary(custom)
+```
+
+#List of Figures
+##Analysis II
+\section{ForwardModelFig}
+\label{sec:FwdModelFig}
+### Table 6.1 - Forward Model Selection
+```{r forward_model_fig, echo=FALSE, warning=FALSE, message=FALSE}
+autoplot(forwardmodel, which = 1:6, label.size = 3)
+```
+
+\section{ForwardModelFig}
+\label{sec:FwdModelFig}
+### Table 6.2 - Backward Model Selection
+```{r backward_model_fig, echo=FALSE, warning=FALSE, message=FALSE}
+autoplot(backwardmodel, which = 1:6, label.size = 3)
+```
+
+\section{StepwiseModelFig}
+\label{sec:StepModelFig}
+### Table 6.3 - Stepwise Model Selection
+```{r step_model_fig, echo=FALSE, warning=FALSE, message=FALSE}
+autoplot(stepwisemodel, which = 1:6, label.size = 3)
+```
+
+\section{CustomModelFig}
+\label{sec:CustomModelFig}
+### Table 6.4 - Stepwise Model Selection
+```{r custom_model_fig, echo=FALSE, warning=FALSE, message=FALSE}
+autoplot(custom, which = 1:6, label.size = 3)
+```
 # References
